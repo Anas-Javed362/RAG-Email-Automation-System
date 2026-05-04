@@ -36,62 +36,60 @@ C --> J[DB Persist + Cache]
 J --> J1[SQLite + FAISS]
 ```
 
-## Project Structure
 
 ## Project Structure
 
-
-rag based email/
+```
+rag-based-email/
 ├── app/
-│ ├── main.py
-│ ├── core/
-│ │ ├── logger.py
-│ │ └── middleware.py
-│ ├── routes/
-│ │ └── email_routes.py
-│ ├── services/
-│ │ ├── email_service.py
-│ │ ├── cache_service.py
-│ │ └── confidence_service.py
-│ ├── models/
-│ │ ├── email_model.py
-│ │ └── thread_model.py
-│ ├── schemas/
-│ │ └── email_schema.py
-│ └── database/
-│ └── db.py
+│   ├── main.py
+│   ├── core/
+│   │   ├── logger.py
+│   │   └── middleware.py
+│   ├── routes/
+│   │   └── email_routes.py
+│   ├── services/
+│   │   ├── email_service.py
+│   │   ├── cache_service.py
+│   │   └── confidence_service.py
+│   ├── models/
+│   │   ├── email_model.py
+│   │   └── thread_model.py
+│   ├── schemas/
+│   │   └── email_schema.py
+│   └── database/
+│       └── db.py
 │
 ├── rag/
-│ ├── embedder.py
-│ ├── vector_store.py
-│ ├── retriever.py
-│ ├── generator.py
-│ └── prompts/
-│ ├── v1.txt
-│ └── v2.txt
+│   ├── embedder.py
+│   ├── vector_store.py
+│   ├── retriever.py
+│   ├── generator.py
+│   └── prompts/
+│       ├── v1.txt
+│       └── v2.txt
 │
 ├── classifiers/
-│ └── classifier.py
+│   └── classifier.py
 ├── ingestion/
-│ └── email_cleaner.py
+│   └── email_cleaner.py
 ├── config/
-│ └── settings.py
+│   └── settings.py
 ├── data/
-│ └── seed_emails.json
+│   └── seed_emails.json
 ├── scripts/
-│ ├── seed_data.py
-│ ├── test_pipeline.py
-│ └── evaluate.py
+│   ├── seed_data.py
+│   ├── test_pipeline.py
+│   └── evaluate.py
 ├── frontend/
-│ └── index.html
+│   └── index.html
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
 ├── .env.example
 └── README.md
+```
 
-
----
 
 ## Quick Start
 
