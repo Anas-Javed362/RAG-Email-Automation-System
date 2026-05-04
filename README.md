@@ -10,21 +10,21 @@ Built with FastAPI, LangChain, FAISS, sentence-transformers, SQLite, and Docker.
 ```mermaid
 flowchart TD
 
-A[Incoming Email] --> B[Middleware (Request ID)]
-B --> C[EmailService (Async Orchestrator)]
+A[Incoming Email] --> B[Middleware - Request ID]
+B --> C[EmailService - Async Orchestrator]
 
 C --> D[EmailCleaner]
 D --> D1[HTML Strip, Signature Removal, Normalization]
 
 C --> E[Cache Check]
-E --> E1[SHA-256 Hash Lookup (Memory/Redis)]
+E --> E1[SHA-256 Hash Lookup Memory/Redis]
 
 C --> F[Classifier]
 F --> F1[Rule-based + LLM Zero-shot]
 
 C --> G[Retriever]
-G --> G1[FAISS Search (Semantic Similarity)]
-G --> G2[Thread History (Previous Messages)]
+G --> G1[FAISS Search - Semantic Similarity]
+G --> G2[Thread History - Previous Messages]
 
 C --> H[Generator]
 H --> H1[Prompt + Retry + Self-Evaluation]
@@ -34,7 +34,6 @@ I --> I1[Weighted Scoring]
 
 C --> J[DB Persist + Cache]
 J --> J1[SQLite + FAISS]
----
 
 ## Project Structure
 
