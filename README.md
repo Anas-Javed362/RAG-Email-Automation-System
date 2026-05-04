@@ -91,9 +91,6 @@ rag based email/
 
 ```bash
 cd "rag based email"
-cp .env.example .env
-
-Edit the .env file and add your API key.
 
 2. Create Virtual Environment
 python -m venv venv
