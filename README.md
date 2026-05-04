@@ -17,15 +17,27 @@ Middleware (Request ID)
 ▼
 EmailService (async orchestrator)
 │
-├─ EmailCleaner → HTML strip, signature removal, normalization
-├─ Cache Check → SHA-256 hash lookup
-├─ Classifier → Rule-based + LLM zero-shot
-├─ Retriever
-│ ├─ FAISS search → semantic similarity
-│ └─ Thread history → previous messages
-├─ Generator → prompt + retry + self-eval
-├─ Confidence Fusion → weighted scoring
-└─ DB Persist + Cache → SQLite + FAISS
+├── EmailCleaner
+│ └── HTML strip, signature removal, normalization
+│
+├── Cache Check
+│ └── SHA-256 hash lookup (memory/Redis)
+│
+├── Classifier
+│ └── Rule-based + LLM zero-shot
+│
+├── Retriever
+│ ├── FAISS search (semantic similarity)
+│ └── Thread history (previous messages)
+│
+├── Generator
+│ └── Prompt + retry + self-evaluation
+│
+├── Confidence Fusion
+│ └── Weighted scoring
+│
+└── DB Persist + Cache
+└── SQLite + FAISS
 
 
 ---
