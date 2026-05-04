@@ -351,4 +351,5 @@ If `final < confidence_threshold` → `needs_review: true`
 
 MIT License — built for educational and production use.
 #   R A G - E m a i l - A u t o m a t i o n - S y s t e m  
+ #   R A G - E m a i l - A u t o m a t i o n - S y s t e m  
  
