@@ -1,0 +1,122 @@
+[
+  {
+    "sender": "sarah.johnson@email.com",
+    "subject": "Damaged product received",
+    "body": "I received my order #45821 today and the product arrived completely damaged. The packaging was torn and the item inside was broken. This is absolutely unacceptable. I want a full refund immediately. I have been a loyal customer for 3 years and this is the worst experience I have ever had.",
+    "category": "Complaint"
+  },
+  {
+    "sender": "mike.torres@business.com",
+    "subject": "Wrong item shipped",
+    "body": "I ordered a blue medium-sized jacket (order #88234) but received a red large instead. This is very frustrating as I needed it for an event this weekend. Please arrange an urgent exchange or refund. I am extremely disappointed with the fulfillment quality.",
+    "category": "Complaint"
+  },
+  {
+    "sender": "linda.chen@gmail.com",
+    "subject": "Terrible customer service",
+    "body": "I have been trying to get help with my defective laptop for two weeks now. Every time I call, I get transferred and nobody resolves my issue. I have never experienced such poor quality support. This is completely unacceptable and I will be leaving a negative review if this is not resolved today.",
+    "category": "Complaint"
+  },
+  {
+    "sender": "james.clark@outlook.com",
+    "subject": "Refund not received after 15 days",
+    "body": "I returned my order 15 days ago and was promised a refund within 5-7 business days. I have not received anything yet. I have sent 3 emails and called twice with no resolution. This problem needs to be fixed today or I will dispute the charge with my bank.",
+    "category": "Complaint"
+  },
+  {
+    "sender": "priya.sharma@company.org",
+    "subject": "Inquiry about bulk pricing",
+    "body": "Hello, I am interested in purchasing your products in bulk for our company. Could you please provide information about bulk pricing, minimum order quantities, and any available discounts for corporate accounts? We would typically order around 200 units per month.",
+    "category": "Inquiry"
+  },
+  {
+    "sender": "robert.kim@startup.io",
+    "subject": "What payment methods do you accept?",
+    "body": "Hi there, I would like to know what payment methods you accept for international orders. Specifically, do you accept wire transfers, PayPal, or cryptocurrency? Also, are there any additional fees for international payments? Thank you.",
+    "category": "Inquiry"
+  },
+  {
+    "sender": "natalie.white@design.co",
+    "subject": "Do you offer custom orders?",
+    "body": "Good afternoon! I am wondering if you offer custom or personalized versions of your products. I am looking for a unique gift for a corporate event and would love to add our company logo. Could you tell me about the customization options and pricing?",
+    "category": "Inquiry"
+  },
+  {
+    "sender": "ahmed.hassan@freelance.net",
+    "subject": "Shipping to international locations",
+    "body": "I am based in Egypt and curious about whether you ship internationally. What are the estimated delivery times and shipping costs to Middle Eastern countries? Do I need to pay any import duties separately?",
+    "category": "Inquiry"
+  },
+  {
+    "sender": "emily.parker@school.edu",
+    "subject": "Student discount availability",
+    "body": "Hello! I am a university student and wanted to ask whether you offer any student discounts. I found your product online and I am very interested in purchasing it but the price is a bit high for my budget. Any discount or student program would be greatly appreciated.",
+    "category": "Inquiry"
+  },
+  {
+    "sender": "carlos.mendez@techcorp.com",
+    "subject": "Cannot login to my account",
+    "body": "I am unable to log into my account since yesterday. I have tried resetting my password twice but I keep getting an error message that says 'Invalid credentials'. I have cleared my browser cache and tried different browsers but the issue persists. Please help me regain access as I have important order history there.",
+    "category": "Support"
+  },
+  {
+    "sender": "jessica.wu@hospital.org",
+    "subject": "How to configure API integration",
+    "body": "Hi support team, I am trying to integrate your API with our internal system but I am getting a 401 Unauthorized error when making requests. I have double-checked the API key and it looks correct. Can you walk me through the authentication setup? Our backend is built in Python using the requests library.",
+    "category": "Support"
+  },
+  {
+    "sender": "daniel.nguyen@media.tv",
+    "subject": "App not loading on iPhone",
+    "body": "Your mobile app stopped working on my iPhone 13 after the latest iOS update. It shows a blank white screen on launch and then crashes after about 5 seconds. I have already tried reinstalling the app twice. Is this a known issue? How can I fix it?",
+    "category": "Support"
+  },
+  {
+    "sender": "anna.kowalski@retail.eu",
+    "subject": "Need help with subscription cancellation",
+    "body": "I have been trying to cancel my monthly subscription for the past week but cannot find the option in my account settings. I have already been charged for this month and I do not want to be charged again. Please guide me through the cancellation process or cancel it on your end.",
+    "category": "Support"
+  },
+  {
+    "sender": "tommy.brown@creative.agency",
+    "subject": "Export feature not working",
+    "body": "The PDF export feature in your dashboard is not working for me. When I click the export button, the loading spinner shows for about 30 seconds and then just disappears without downloading anything. I have tested with multiple files and the same problem occurs every time. My account ID is TB-9921.",
+    "category": "Support"
+  },
+  {
+    "sender": "notifications@prize-central-winners.xyz",
+    "subject": "CONGRATULATIONS! You have won $50,000!!!",
+    "body": "CONGRATULATIONS!!! You have been selected as the LUCKY WINNER of our grand prize draw! You have won $50,000 USD! Click here immediately to claim your prize before it expires! Act now - this is a limited time offer! No obligation required. 100% FREE! Simply verify your details to receive your winnings.",
+    "category": "Spam"
+  },
+  {
+    "sender": "deals@super-savings-unlimited.net",
+    "subject": "Exclusive deal - 90% OFF everything today only!!!",
+    "body": "LIMITED TIME OFFER! Get 90% OFF all products TODAY ONLY! This exclusive deal expires in 2 hours. Buy now and save big! Click here to claim your discount. Earn money from home while you shop! Special promotion for selected customers only. Unsubscribe if you don't want amazing deals.",
+    "category": "Spam"
+  },
+  {
+    "sender": "crypto-investment@fastrich-guaranteed.com",
+    "subject": "Make $500/day working from home - GUARANTEED",
+    "body": "Are you tired of your 9-5 job? Make $500 a day working from home with our proven system! No experience needed! 100% guaranteed results or your money back! Join thousands of people who are already making money online. Order now and start earning immediately! This offer won't last long!",
+    "category": "Spam"
+  },
+  {
+    "sender": "sophia.anderson@university.edu",
+    "subject": "Re: My previous complaint about delayed shipment",
+    "body": "Following up on my complaint last week about my delayed order #67432. The tracking still shows the package has not moved since Monday. It has now been 3 weeks since I placed my order and I still have not received anything. I would like to know the current status and whether I should request a replacement.",
+    "category": "Complaint"
+  },
+  {
+    "sender": "victor.liu@enterprise.com",
+    "subject": "Integration documentation question",
+    "body": "Hello, I am reviewing your API documentation and have a question about rate limiting. The docs mention a limit of 1000 requests per hour but I cannot find information about burst limits or what happens when the limit is exceeded. Do you have a detailed rate limiting guide or can you explain the retry-after behavior?",
+    "category": "Inquiry"
+  },
+  {
+    "sender": "marketing@fake-lottery-2024.biz",
+    "subject": "Your lottery ticket has been selected - WINNER",
+    "body": "Dear lucky winner! Your email was randomly selected in our international lottery. You have won a prize of $1,000,000! To claim your lottery prize, you need to pay a small processing fee of $200. This is completely legitimate and guaranteed. Contact us immediately to receive your winnings before the deadline.",
+    "category": "Spam"
+  }
+]

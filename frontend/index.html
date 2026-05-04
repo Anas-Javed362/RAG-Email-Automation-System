@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG Email Automation System</title>
+  <meta name="description" content="AI-powered email classification and response generation using Retrieval-Augmented Generation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: #1a2235;
+      --bg-input: #0f1624;
+      --border: #1e2d45;
+      --border-focus: #3b82f6;
+      --text-primary: #f0f4ff;
+      --text-secondary: #8ba0be;
+      --text-muted: #4a6080;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+      --gradient-main: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(59,130,246,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    }
+
+    /* ── Header ───────────────────────────── */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--gradient-main);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .logo-text { font-size: 17px; font-weight: 600; }
+    .logo-sub { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+
+    .header-badges { display: flex; gap: 8px; }
+    .badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .badge-blue { border-color: var(--accent-blue); color: var(--accent-blue); background: rgba(59,130,246,0.08); }
+    .badge-purple { border-color: var(--accent-purple); color: var(--accent-purple); background: rgba(139,92,246,0.08); }
+
+    /* ── Layout ───────────────────────────── */
+    .main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+    /* ── Cards ────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── Form Elements ────────────────────── */
+    .form-group { margin-bottom: 16px; }
+    label { font-size: 13px; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 6px; }
+
+    input, textarea, select {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    textarea { resize: vertical; min-height: 160px; line-height: 1.6; }
+
+    .thread-row { display: flex; gap: 10px; }
+    .thread-row input { flex: 1; }
+
+    /* ── Buttons ──────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--gradient-main);
+      color: #fff;
+      width: 100%;
+      font-size: 15px;
+      padding: 13px;
+    }
+    .btn-primary:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.4); }
+    .btn-primary:active:not(:disabled) { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 13px;
+      padding: 8px 14px;
+    }
+    .btn-secondary:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+    /* ── Spinner ──────────────────────────── */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Response area ────────────────────── */
+    .response-area { display: none; }
+    .response-area.visible { display: block; }
+
+    .result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Category badge ───────────────────── */
+    .category-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .category-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 30px;
+    }
+
+    .cat-complaint { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+    .cat-inquiry   { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+    .cat-support   { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+    .cat-spam      { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+    .cat-unknown   { background: rgba(107,114,128,0.15); color: #9ca3af; border: 1px solid rgba(107,114,128,0.3); }
+
+    /* ── Review alert ─────────────────────── */
+    .review-alert {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .review-alert.needs-review { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
+    .review-alert.auto-resolved { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
+
+    /* ── Confidence ───────────────────────── */
+    .confidence-section { margin-bottom: 20px; }
+    .confidence-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .confidence-value { font-weight: 700; font-size: 15px; color: var(--text-primary); }
+
+    .confidence-bar-track {
+      height: 6px;
+      background: var(--bg-input);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .confidence-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .breakdown-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .breakdown-item {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .breakdown-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .breakdown-value { font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+    /* ── Response text ────────────────────── */
+    .response-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; margin-bottom: 10px; }
+    .response-text {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ── Metadata pills ───────────────────── */
+    .meta-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .meta-pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Error ────────────────────────────── */
+    .error-box {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #f87171;
+      font-size: 14px;
+      display: none;
+    }
+    .error-box.visible { display: block; }
+
+    /* ── System status ────────────────────── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+    .status-dot.online { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+    .status-dot.offline { background: var(--accent-red); }
+
+    /* ── Copy button ──────────────────────── */
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .copy-btn:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+    .copy-btn.copied { border-color: var(--accent-green); color: var(--accent-green); }
+
+    /* ── Examples sidebar ─────────────────── */
+    .examples-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; }
+    .example-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+    .example-item:hover { border-color: var(--accent-blue); background: rgba(59,130,246,0.05); }
+    .example-cat { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 4px; }
+    .example-subj { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+
+    /* ── Footer ───────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      color: var(--text-muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">📬</div>
+      <div>
+        <div class="logo-text">RAG Email System</div>
+        <div class="logo-sub">AI-Powered Email Automation</div>
+      </div>
+    </div>
+    <div class="header-badges">
+      <div id="systemStatus" class="status-bar">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Checking...</span>
+      </div>
+      <span class="badge badge-blue" id="vectorCount">Vector DB</span>
+      <span class="badge badge-purple" id="promptVersion">Prompt —</span>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="grid">
+
+    <!-- LEFT: Input form -->
+    <div>
+      <div class="card">
+        <div class="card-title">✉️ Compose Email</div>
+
+        <div class="form-group">
+          <label for="senderInput">From (Sender)</label>
+          <input type="text" id="senderInput" placeholder="customer@example.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="subjectInput">Subject</label>
+          <input type="text" id="subjectInput" placeholder="e.g. My order arrived damaged" />
+        </div>
+
+        <div class="form-group">
+          <label for="bodyInput">Email Body</label>
+          <textarea id="bodyInput" placeholder="Paste or type the email body here..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="threadInput">Thread ID <span style="color:var(--text-muted);font-weight:400">(optional — for follow-up emails)</span></label>
+          <div class="thread-row">
+            <input type="text" id="threadInput" placeholder="thread-abc123" />
+            <button class="btn btn-secondary" onclick="generateThreadId()">Generate</button>
+          </div>
+        </div>
+
+        <div id="errorBox" class="error-box"></div>
+
+        <button class="btn btn-primary" id="processBtn" onclick="processEmail()">
+          <span id="btnText">⚡ Process Email</span>
+        </button>
+      </div>
+
+      <!-- Examples -->
+      <div style="margin-top: 20px;">
+        <div class="examples-title">📋 Quick Examples</div>
+        <div class="example-item" onclick="loadExample('complaint')">
+          <div class="example-cat">Complaint</div>
+          <div class="example-subj">My order arrived completely damaged</div>
+        </div>
+        <div class="example-item" onclick="loadExample('inquiry')">
+          <div class="example-cat">Inquiry</div>
+          <div class="example-subj">Do you offer bulk pricing discounts?</div>
+        </div>
+        <div class="example-item" onclick="loadExample('support')">
+          <div class="example-cat">Support</div>
+          <div class="example-subj">I can't log in to my account</div>
+        </div>
+        <div class="example-item" onclick="loadExample('spam')">
+          <div class="example-cat">Spam</div>
+          <div class="example-subj">Congratulations! You've won $50,000!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Response -->
+    <div>
+      <div id="responseArea" class="response-area">
+        <div class="result-card">
+          <div class="card-title">🤖 AI Analysis & Response</div>
+
+          <div class="category-row">
+            <span id="categoryPill" class="category-pill">—</span>
+            <div style="font-size:12px; color:var(--text-muted)">
+              <span id="requestId" style="font-family:'JetBrains Mono',monospace"></span>
+            </div>
+          </div>
+
+          <div id="reviewAlert" class="review-alert">
+            <span id="reviewIcon"></span>
+            <span id="reviewText"></span>
+          </div>
+
+          <div class="confidence-section">
+            <div class="confidence-label">
+              <span>Confidence Score</span>
+              <span class="confidence-value" id="confidenceValue">—</span>
+            </div>
+            <div class="confidence-bar-track">
+              <div class="confidence-bar-fill" id="confidenceBar" style="width:0%"></div>
+            </div>
+
+            <div class="breakdown-grid">
+              <div class="breakdown-item">
+                <div class="breakdown-label">Classification</div>
+                <div class="breakdown-value" id="bdClassification" style="color:var(--accent-blue)">—</div>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-label">Similarity</div>
+                <div class="breakdown-value" id="bdSimilarity" style="color:var(--accent-purple)">—</div>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-label">LLM Self-Eval</div>
+                <div class="breakdown-value" id="bdLlmSelf" style="color:var(--accent-cyan)">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div class="response-label">Generated Response</div>
+            <button class="copy-btn" id="copyBtn" onclick="copyResponse()">📋 Copy</button>
+          </div>
+          <div class="response-text" id="responseText"></div>
+
+          <div class="meta-row">
+            <span class="meta-pill" id="metaRetrieved"></span>
+            <span class="meta-pill" id="metaPrompt"></span>
+            <span class="meta-pill" id="metaLatency"></span>
+            <span class="meta-pill" id="metaThread"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Placeholder when no result -->
+      <div id="emptyState" style="text-align:center; padding:60px 24px; color:var(--text-muted);">
+        <div style="font-size:48px; margin-bottom:16px;">📬</div>
+        <div style="font-size:15px; color:var(--text-secondary); margin-bottom:8px;">No email processed yet</div>
+        <div style="font-size:13px;">Fill in the form on the left and click <strong style="color:var(--text-primary)">Process Email</strong></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  RAG-Based Email Automation System — Powered by LangChain · FAISS · sentence-transformers · FastAPI
+</footer>
+
+<script>
+  const API_BASE = "";  // Same origin, so empty = relative paths
+
+  const EXAMPLES = {
+    complaint: {
+      sender: "sarah.johnson@email.com",
+      subject: "My order arrived completely damaged",
+      body: "I received my order #45821 today and the product arrived completely damaged. The packaging was torn and the item inside was broken. This is absolutely unacceptable. I want a full refund immediately.",
+    },
+    inquiry: {
+      sender: "robert.kim@startup.io",
+      subject: "Do you offer bulk pricing discounts?",
+      body: "Hello, I am interested in purchasing your products in bulk for our company. Could you please provide information about bulk pricing, minimum order quantities, and any available discounts for corporate accounts? We would typically order around 200 units per month.",
+    },
+    support: {
+      sender: "carlos.mendez@techcorp.com",
+      subject: "I can't log in to my account",
+      body: "I am unable to log into my account since yesterday. I have tried resetting my password twice but I keep getting an error message that says 'Invalid credentials'. I have cleared my browser cache and tried different browsers but the issue persists. Please help me regain access.",
+    },
+    spam: {
+      sender: "notifications@prize-central-winners.xyz",
+      subject: "Congratulations! You've won $50,000!!!",
+      body: "CONGRATULATIONS!!! You have been selected as the LUCKY WINNER of our grand prize draw! You have won $50,000 USD! Click here immediately to claim your prize before it expires! Act now — this is a limited time offer! 100% FREE!",
+    },
+  };
+
+  function loadExample(type) {
+    const ex = EXAMPLES[type];
+    if (!ex) return;
+    document.getElementById("senderInput").value = ex.sender;
+    document.getElementById("subjectInput").value = ex.subject;
+    document.getElementById("bodyInput").value = ex.body;
+  }
+
+  function generateThreadId() {
+    const id = "thread-" + Math.random().toString(36).slice(2, 10);
+    document.getElementById("threadInput").value = id;
+  }
+
+  function setLoading(loading) {
+    const btn = document.getElementById("processBtn");
+    const text = document.getElementById("btnText");
+    btn.disabled = loading;
+    text.innerHTML = loading
+      ? '<div class="spinner"></div> Processing...'
+      : '⚡ Process Email';
+  }
+
+  function showError(msg) {
+    const box = document.getElementById("errorBox");
+    box.textContent = msg;
+    box.classList.add("visible");
+  }
+
+  function clearError() {
+    document.getElementById("errorBox").classList.remove("visible");
+  }
+
+  function getConfidenceColor(score) {
+    if (score >= 0.75) return "#10b981";
+    if (score >= 0.55) return "#f59e0b";
+    return "#ef4444";
+  }
+
+  function getCategoryClass(cat) {
+    const map = { Complaint: "cat-complaint", Inquiry: "cat-inquiry", Support: "cat-support", Spam: "cat-spam" };
+    return map[cat] || "cat-unknown";
+  }
+
+  function getCategoryEmoji(cat) {
+    const map = { Complaint: "😤", Inquiry: "❓", Support: "🛠️", Spam: "🚫" };
+    return map[cat] || "📧";
+  }
+
+  function renderResult(data) {
+    document.getElementById("emptyState").style.display = "none";
+    const area = document.getElementById("responseArea");
+    area.classList.add("visible");
+
+    // Category
+    const pill = document.getElementById("categoryPill");
+    pill.textContent = `${getCategoryEmoji(data.category)} ${data.category}`;
+    pill.className = `category-pill ${getCategoryClass(data.category)}`;
+
+    // Request ID
+    document.getElementById("requestId").textContent = `#${(data.request_id || "").slice(0,8)}`;
+
+    // Review alert
+    const alert = document.getElementById("reviewAlert");
+    const icon = document.getElementById("reviewIcon");
+    const text = document.getElementById("reviewText");
+    if (data.needs_review) {
+      alert.className = "review-alert needs-review";
+      icon.textContent = "⚠️";
+      text.textContent = "Low confidence — flagged for human review";
+    } else {
+      alert.className = "review-alert auto-resolved";
+      icon.textContent = "✅";
+      text.textContent = "High confidence — auto-resolved";
+    }
+
+    // Confidence bar
+    const score = data.confidence || 0;
+    const color = getConfidenceColor(score);
+    document.getElementById("confidenceValue").textContent = `${(score * 100).toFixed(1)}%`;
+    document.getElementById("confidenceBar").style.width = `${score * 100}%`;
+    document.getElementById("confidenceBar").style.background = color;
+
+    // Breakdown
+    const bd = data.confidence_breakdown;
+    if (bd) {
+      document.getElementById("bdClassification").textContent = (bd.classification * 100).toFixed(0) + "%";
+      document.getElementById("bdSimilarity").textContent = (bd.similarity * 100).toFixed(0) + "%";
+      document.getElementById("bdLlmSelf").textContent = (bd.llm_self * 100).toFixed(0) + "%";
+    }
+
+    // Response text (typing animation)
+    const responseEl = document.getElementById("responseText");
+    const fullText = data.response || "(No response generated)";
+    responseEl.textContent = "";
+    let i = 0;
+    const interval = setInterval(() => {
+      responseEl.textContent += fullText[i];
+      i++;
+      if (i >= fullText.length) clearInterval(interval);
+    }, 10);
+
+    // Meta pills
+    document.getElementById("metaRetrieved").textContent = `📚 ${data.retrieval_count || 0} retrieved`;
+    document.getElementById("metaPrompt").textContent = `📝 Prompt ${data.prompt_version || "—"}`;
+    document.getElementById("metaLatency").textContent = `⏱ ${(data.latency_ms || 0).toFixed(0)}ms`;
+    const thread = data.thread_id;
+    const threadEl = document.getElementById("metaThread");
+    if (thread) {
+      threadEl.textContent = `🧵 ${thread}`;
+      threadEl.style.display = "inline-block";
+    } else {
+      threadEl.style.display = "none";
+    }
+  }
+
+  async function processEmail() {
+    clearError();
+    const sender = document.getElementById("senderInput").value.trim();
+    const subject = document.getElementById("subjectInput").value.trim();
+    const body = document.getElementById("bodyInput").value.trim();
+    const threadId = document.getElementById("threadInput").value.trim();
+
+    if (!sender) { showError("Sender is required."); return; }
+    if (!body || body.length < 10) { showError("Email body must be at least 10 characters."); return; }
+
+    setLoading(true);
+
+    try {
+      const payload = { sender, body };
+      if (subject) payload.subject = subject;
+      if (threadId) payload.thread_id = threadId;
+
+      const res = await fetch("/email/process", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      renderResult(data);
+    } catch (err) {
+      showError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function copyResponse() {
+    const text = document.getElementById("responseText").textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById("copyBtn");
+      btn.textContent = "✅ Copied!";
+      btn.classList.add("copied");
+      setTimeout(() => {
+        btn.textContent = "📋 Copy";
+        btn.classList.remove("copied");
+      }, 2000);
+    });
+  }
+
+  // ── Health check on load ────────────────────────────────────────────
+  async function checkHealth() {
+    try {
+      const res = await fetch("/health");
+      if (!res.ok) throw new Error("API down");
+      const data = await res.json();
+      document.getElementById("statusDot").classList.add("online");
+      document.getElementById("statusText").textContent = `Online · ${data.llm_provider}`;
+      document.getElementById("vectorCount").textContent = `${data.vector_count} vectors`;
+      document.getElementById("promptVersion").textContent = `Prompt ${data.prompt_version}`;
+    } catch {
+      document.getElementById("statusDot").classList.add("offline");
+      document.getElementById("statusText").textContent = "API Offline";
+    }
+  }
+
+  checkHealth();
+</script>
+</body>
+</html>

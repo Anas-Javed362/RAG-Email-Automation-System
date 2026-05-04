@@ -1,0 +1,72 @@
+version: "3.9"
+
+services:
+  # ── FastAPI Application ──────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag_email_app
+    ports:
+      - "8000:8000"
+    environment:
+      # LLM Provider
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-3.5-turbo}
+      - HUGGINGFACE_API_TOKEN=${HUGGINGFACE_API_TOKEN}
+      - HUGGINGFACE_MODEL=${HUGGINGFACE_MODEL:-mistralai/Mistral-7B-Instruct-v0.2}
+      # Embeddings & Vector Store
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-all-MiniLM-L6-v2}
+      - VECTOR_STORE=${VECTOR_STORE:-faiss}
+      - FAISS_INDEX_PATH=/app/data/faiss_index
+      # Retrieval
+      - TOP_K_RETRIEVAL=${TOP_K_RETRIEVAL:-5}
+      # Confidence
+      - CONFIDENCE_THRESHOLD=${CONFIDENCE_THRESHOLD:-0.65}
+      - ENABLE_LLM_SELF_EVAL=${ENABLE_LLM_SELF_EVAL:-true}
+      # Prompt versioning
+      - PROMPT_VERSION=${PROMPT_VERSION:-v2}
+      # Retry
+      - LLM_MAX_RETRIES=${LLM_MAX_RETRIES:-3}
+      - LLM_RETRY_BASE_DELAY=${LLM_RETRY_BASE_DELAY:-1.0}
+      # Cache — set to "redis" to use the Redis service below
+      - CACHE_BACKEND=${CACHE_BACKEND:-memory}
+      - REDIS_URL=redis://redis:6379/0
+      - CACHE_TTL_SECONDS=${CACHE_TTL_SECONDS:-3600}
+      # Database
+      - DATABASE_URL=sqlite:////app/data/emails.db
+      # App
+      - APP_ENV=${APP_ENV:-production}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./data:/app/data       # Persist FAISS index + SQLite DB
+      - ./logs:/app/logs       # Persist log files
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  # ── Redis Cache (optional) ───────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: rag_email_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
