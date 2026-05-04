@@ -5,41 +5,35 @@ A production-grade AI backend that classifies incoming emails and generates cont
 Built with FastAPI, LangChain, FAISS, sentence-transformers, SQLite, and Docker.
 
 ---
-
 ## Architecture
 
+```mermaid
+flowchart TD
 
-Incoming Email
-│
-▼
-Middleware (Request ID)
-│
-▼
-EmailService (async orchestrator)
-│
-├── EmailCleaner
-│ └── HTML strip, signature removal, normalization
-│
-├── Cache Check
-│ └── SHA-256 hash lookup (memory/Redis)
-│
-├── Classifier
-│ └── Rule-based + LLM zero-shot
-│
-├── Retriever
-│ ├── FAISS search (semantic similarity)
-│ └── Thread history (previous messages)
-│
-├── Generator
-│ └── Prompt + retry + self-evaluation
-│
-├── Confidence Fusion
-│ └── Weighted scoring
-│
-└── DB Persist + Cache
-└── SQLite + FAISS
+A[Incoming Email] --> B[Middleware (Request ID)]
+B --> C[EmailService (Async Orchestrator)]
 
+C --> D[EmailCleaner]
+D --> D1[HTML Strip, Signature Removal, Normalization]
 
+C --> E[Cache Check]
+E --> E1[SHA-256 Hash Lookup (Memory/Redis)]
+
+C --> F[Classifier]
+F --> F1[Rule-based + LLM Zero-shot]
+
+C --> G[Retriever]
+G --> G1[FAISS Search (Semantic Similarity)]
+G --> G2[Thread History (Previous Messages)]
+
+C --> H[Generator]
+H --> H1[Prompt + Retry + Self-Evaluation]
+
+C --> I[Confidence Fusion]
+I --> I1[Weighted Scoring]
+
+C --> J[DB Persist + Cache]
+J --> J1[SQLite + FAISS]
 ---
 
 ## Project Structure
