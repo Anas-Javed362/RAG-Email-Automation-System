@@ -17,7 +17,7 @@ C --> D[EmailCleaner]
 D --> D1[HTML Strip, Signature Removal, Normalization]
 
 C --> E[Cache Check]
-E --> E1[SHA-256 Hash Lookup Memory/Redis]
+E --> E1[SHA-256 Hash Lookup - Memory or Redis]
 
 C --> F[Classifier]
 F --> F1[Rule-based + LLM Zero-shot]
